@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AR: Tap to Place</title>
+  
+  <!-- 1. Engine self-hostato (devi avere i file in external/xr/) -->
+  <script src="./external/xr/xr.js" async data-preload-chunks="slam"></script>
+  
+  <!-- 2. Comunica a 8th Wall di usare A-Frame -->
+  <meta name="8thwall:renderer" content="aframe:1.5.0"/>
+  
+  <!-- 3. Il tuo componente tap-place (modificato, vedi sotto) -->
+  <script src="tap-place.js"></script>
+  
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #prompt {
+      position: fixed;
+      bottom: 30px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      width: fit-content;
+      margin: 0 auto;
+      pointer-events: none;
+      font-family: sans-serif;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body>
+<div id="prompt">🌵 Tocca il terreno per posizionare</div>
+
+<a-scene
+  tap-place
+  renderer="colorManagement:true"
+  xrweb="allowedDevices: any">
+
+  <a-assets>
+    <a-asset-item id="treeModel" src="tree.glb"></a-asset-item>
+  </a-assets>
+
+  <a-camera
+    id="camera"
+    position="0 8 0"
+    raycaster="objects: .cantap"
+    cursor="fuse: false; rayOrigin: mouse;">
+  </a-camera>
+
+  <!-- Luce direzionale (senza xrextras-attach, posizione fissa) -->
+  <a-entity
+    light="type: directional; intensity: 0.8; castShadow: true; target: #camera"
+    position="1 4.3 2.5"
+    shadow>
+  </a-entity>
+
+  <a-light type="ambient" intensity="0.5"></a-light>
+
+  <a-box
+    id="ground"
+    class="cantap"
+    scale="1000 2 1000"
+    position="0 -1 0"
+    material="shader: shadow; transparent: true; opacity: 0.4"
+    shadow>
+  </a-box>
+</a-scene>
+
+<script>
+  // Piccola utility per nascondere il prompt al primo tocco
+  const promptEl = document.getElementById('prompt');
+  document.getElementById('ground')?.addEventListener('click', () => {
+    if (promptEl) promptEl.style.display = 'none';
+  });
+</script>
+</body>
+</html>

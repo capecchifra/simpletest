@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AR: Tap to Place</title>
   
-  <!-- 1. Engine self-hostato (devi avere i file in external/xr/) -->
+  <!-- Self-hosted 8th Wall engine -->
   <script src="./external/xr/xr.js" async data-preload-chunks="slam"></script>
   
-  <!-- 2. Comunica a 8th Wall di usare A-Frame -->
+  <!-- Comunica a 8th Wall di usare A-Frame -->
   <meta name="8thwall:renderer" content="aframe:1.5.0"/>
   
-  <!-- 3. Il tuo componente tap-place (modificato, vedi sotto) -->
+  <!-- Il tuo componente tap-place (identico) -->
   <script src="tap-place.js"></script>
   
   <style>
@@ -54,7 +54,7 @@
     cursor="fuse: false; rayOrigin: mouse;">
   </a-camera>
 
-  <!-- Luce direzionale (senza xrextras-attach, posizione fissa) -->
+  <!-- Luce direzionale -->
   <a-entity
     light="type: directional; intensity: 0.8; castShadow: true; target: #camera"
     position="1 4.3 2.5"
@@ -63,6 +63,7 @@
 
   <a-light type="ambient" intensity="0.5"></a-light>
 
+  <!-- Terreno cliccabile -->
   <a-box
     id="ground"
     class="cantap"
@@ -74,7 +75,7 @@
 </a-scene>
 
 <script>
-  // Piccola utility per nascondere il prompt al primo tocco
+  // Nasconde il prompt al primo click
   const promptEl = document.getElementById('prompt');
   document.getElementById('ground')?.addEventListener('click', () => {
     if (promptEl) promptEl.style.display = 'none';
